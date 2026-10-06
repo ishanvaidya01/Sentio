@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { fetchReadings, fetchRules, fetchIncidents, fetchSimulatorStatus } from './api';
 import SensorCard from './components/SensorCard';
 import LiveChart from './components/LiveChart';
 import RulesPanel from './components/RulesPanel';
 import IncidentLog from './components/IncidentLog';
 import SimulatorControls from './components/SimulatorControls';
+import ConnectionBadge from './components/ConnectionBadge';
+import { useSSE } from './hooks/useSSE';
 
 const SENSORS = ['temperature', 'distance', 'battery'];
 
@@ -15,7 +17,7 @@ function App() {
   const [simStatus, setSimStatus] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [temp, dist, batt, rls, incs, sim] = await Promise.all([
         fetchReadings('temperature', 50),
@@ -34,13 +36,37 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [loadData]);
+
+  const handleSSE = useCallback((event) => {
+    if (event.type === 'fallback_poll') {
+      loadData();
+      return;
+    }
+    
+    if (event.type === 'reading') {
+      setReadings(prev => {
+        const sensorList = [...prev[event.data.sensor], event.data];
+        if (sensorList.length > 50) sensorList.shift();
+        return { ...prev, [event.data.sensor]: sensorList };
+      });
+    }
+    if (event.type === 'incident') {
+      fetchIncidents().then(setIncidents);
+    }
+    if (event.type === 'rules') {
+      setRules(event.data);
+    }
+    if (event.type === 'simulator') {
+      setSimStatus(event.data);
+    }
+  }, [loadData]);
+
+  const status = useSSE(handleSSE);
 
   const getLatest = (sensor) => {
     const list = readings[sensor];
@@ -66,9 +92,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 p-4 md:p-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">SensorScope</h1>
-        <p className="text-zinc-400">Live Telemetry Dashboard</p>
+      <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">SensorScope</h1>
+          <p className="text-zinc-400">Live Telemetry Dashboard</p>
+        </div>
+        <ConnectionBadge status={status} />
       </header>
 
       <main className="space-y-8">

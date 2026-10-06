@@ -1,5 +1,6 @@
 import { addReading } from './store.js';
 import { evaluateReading } from './ruleEngine.js';
+import { emitEvent } from './events.js';
 
 let interval = null;
 let active = false;

@@ -1,4 +1,5 @@
 import { getRules, getActiveIncidentForSensor, addIncident, resolveIncident } from './store.js';
+import { emitEvent } from './events.js';
 
 export function evaluateReading(reading) {
   const rules = getRules();
@@ -42,11 +43,13 @@ export function evaluateReading(reading) {
         status: 'active'
       };
       addIncident(newIncident);
+      emitEvent('incident', newIncident);
     }
   } else {
     // No rules violated, resolve active incident if any
     if (activeIncident) {
       resolveIncident(activeIncident.id);
+      emitEvent('incident', activeIncident);
     }
   }
 }

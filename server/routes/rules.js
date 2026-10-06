@@ -2,6 +2,7 @@ import express from 'express';
 import { getRules, setRules, getReadingsState } from '../services/store.js';
 import { validateRule } from '../validators.js';
 import { reevaluateAllRules } from '../services/ruleEngine.js';
+import { emitEvent } from '../services/events.js';
 
 const router = express.Router();
 
@@ -34,6 +35,7 @@ router.put('/', (req, res) => {
   
   // Re-evaluate immediately
   reevaluateAllRules(getReadingsState());
+  emitEvent('rules', getRules());
 
   res.json(getRules());
 });

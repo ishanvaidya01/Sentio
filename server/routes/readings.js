@@ -1,6 +1,8 @@
+import express from 'express';
 import { validateReading } from '../validators.js';
 import { addReading, getReadings } from '../services/store.js';
 import { evaluateReading } from '../services/ruleEngine.js';
+import { emitEvent } from '../services/events.js';
 
 const router = express.Router();
 
@@ -44,6 +46,7 @@ router.post('/', (req, res) => {
     const saved = addReading(raw);
     savedReadings.push(saved);
     evaluateReading(raw);
+    emitEvent('reading', saved);
   }
 
   if (allErrors.length > 0 && savedReadings.length === 0) {

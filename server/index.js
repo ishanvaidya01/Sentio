@@ -20,11 +20,13 @@ app.use(express.json());
 
 import rulesRouter from './routes/rules.js';
 import incidentsRouter from './routes/incidents.js';
+import streamRouter from './routes/stream.js';
 
 app.use('/api/readings', readingsRouter);
 app.use('/api/simulator', simulatorRouter);
 app.use('/api/rules', rulesRouter);
 app.use('/api/incidents', incidentsRouter);
+app.use('/api/stream', streamRouter);
 
 if (process.env.SIMULATOR_AUTOSTART === 'true') {
   startSimulator();
