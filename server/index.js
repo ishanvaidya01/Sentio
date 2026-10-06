@@ -8,10 +8,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
+import readingsRouter from './routes/readings.js';
+
 app.use(cors({
   origin: CLIENT_ORIGIN
 }));
 app.use(express.json());
+
+app.use('/api/readings', readingsRouter);
 
 // Phase 1 API health check
 app.get('/api/health', (req, res) => {
