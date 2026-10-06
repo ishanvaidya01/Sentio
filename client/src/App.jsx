@@ -121,7 +121,16 @@ function App() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-4">Telemetry History</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Telemetry History</h2>
+            <a 
+              href={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/readings/export.csv`} 
+              target="_blank" rel="noopener noreferrer"
+              className="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-lg transition-colors border border-zinc-700"
+            >
+              Export CSV
+            </a>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {SENSORS.map(sensor => (
               <LiveChart 

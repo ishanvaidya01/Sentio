@@ -56,6 +56,20 @@ router.post('/', (req, res) => {
   res.status(201).json(savedReadings.length === 1 ? savedReadings[0] : savedReadings);
 });
 
+router.get('/export.csv', (req, res) => {
+  const { sensor } = req.query;
+  const data = getReadings(sensor, 500);
+
+  let csv = 'id,sensor,value,unit,timestamp\n';
+  for (const row of data) {
+    csv += `${row.id},${row.sensor},${row.value},${row.unit},${row.timestamp}\n`;
+  }
+  
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename="telemetry_${sensor || 'all'}.csv"`);
+  res.send(csv);
+});
+
 router.get('/', (req, res) => {
   const { sensor, limit = 50 } = req.query;
   const data = getReadings(sensor, limit);
