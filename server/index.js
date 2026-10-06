@@ -18,8 +18,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
+import rulesRouter from './routes/rules.js';
+import incidentsRouter from './routes/incidents.js';
+
 app.use('/api/readings', readingsRouter);
 app.use('/api/simulator', simulatorRouter);
+app.use('/api/rules', rulesRouter);
+app.use('/api/incidents', incidentsRouter);
 
 if (process.env.SIMULATOR_AUTOSTART === 'true') {
   startSimulator();

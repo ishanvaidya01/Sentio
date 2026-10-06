@@ -1,6 +1,7 @@
 import express from 'express';
 import { validateReading } from '../validators.js';
-import { addReading, getReadings } from '../services/store.js';
+import { addReading } from '../services/store.js';
+import { evaluateReading } from '../services/ruleEngine.js';
 
 const router = express.Router();
 
@@ -40,10 +41,10 @@ router.post('/', (req, res) => {
       allErrors.push(...errors);
       continue;
     }
-    
     raw.unit = getUnit(raw.sensor);
     const saved = addReading(raw);
     savedReadings.push(saved);
+    evaluateReading(raw);
   }
 
   if (allErrors.length > 0 && savedReadings.length === 0) {

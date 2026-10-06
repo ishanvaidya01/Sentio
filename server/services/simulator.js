@@ -1,4 +1,5 @@
 import { addReading } from './store.js';
+import { evaluateReading } from './ruleEngine.js';
 
 let interval = null;
 let active = false;
@@ -84,7 +85,7 @@ function tick() {
 
   for (const r of readings) {
     addReading(r);
-    // TODO: run rule engine
+    evaluateReading(r);
     // TODO: emit event
   }
 }
