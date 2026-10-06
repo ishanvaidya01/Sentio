@@ -1,6 +1,5 @@
-import express from 'express';
 import { validateReading } from '../validators.js';
-import { addReading } from '../services/store.js';
+import { addReading, getReadings } from '../services/store.js';
 import { evaluateReading } from '../services/ruleEngine.js';
 
 const router = express.Router();
