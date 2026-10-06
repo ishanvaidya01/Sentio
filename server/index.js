@@ -10,12 +10,20 @@ const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
 import readingsRouter from './routes/readings.js';
 
+import simulatorRouter from './routes/simulator.js';
+import { startSimulator } from './services/simulator.js';
+
 app.use(cors({
   origin: CLIENT_ORIGIN
 }));
 app.use(express.json());
 
 app.use('/api/readings', readingsRouter);
+app.use('/api/simulator', simulatorRouter);
+
+if (process.env.SIMULATOR_AUTOSTART === 'true') {
+  startSimulator();
+}
 
 // Phase 1 API health check
 app.get('/api/health', (req, res) => {
