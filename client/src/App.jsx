@@ -138,7 +138,10 @@ function App() {
             />
           ))}
         </div>
-        <p style={{ color: '#9ca3af', fontSize: '13px', margin: 0 }}>Connecting to Sentio…</p>
+        <p style={{ color: '#9ca3af', fontSize: '13px', margin: 0, textAlign: 'center', lineHeight: '1.5' }}>
+          Connecting to Sentio…<br/>
+          <span style={{ fontSize: '11px', opacity: 0.7 }}>Note: Free-tier backend may take up to 50 seconds to wake up.</span>
+        </p>
       </div>
     );
   }

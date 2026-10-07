@@ -43,6 +43,30 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
+// Root route friendly message
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Sentio API</title>
+        <style>
+          body { font-family: system-ui, sans-serif; background: #111827; color: #f9fafb; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+          .container { text-align: center; background: #1f2937; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+          h1 { margin-top: 0; color: #10b981; }
+          p { color: #9ca3af; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Sentio Backend is Running 🚀</h1>
+          <p>This is the API server for the Sentio Dashboard.</p>
+          <p>The frontend will automatically connect to this service.</p>
+        </div>
+      </body>
+    </html>
+  `);
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
