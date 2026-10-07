@@ -11,6 +11,31 @@ import { useSSE } from './hooks/useSSE';
 const SENSORS = ['temperature', 'distance', 'battery'];
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+const playBeep = () => {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.type = 'sine';
+    // 880Hz is a clear, attention-grabbing 'A5' note
+    osc.frequency.setValueAtTime(880, ctx.currentTime); 
+    
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.start();
+    osc.stop(ctx.currentTime + 0.5);
+  } catch (e) {
+    console.warn('Audio beep blocked or failed', e);
+  }
+};
+
 function App() {
   const [readings,   setReadings]   = useState({ temperature: [], distance: [], battery: [] });
   const [rules,      setRules]      = useState([]);
@@ -52,6 +77,10 @@ function App() {
       });
     }
     if (event.type === 'incident') {
+      // Play a beep if this is a newly triggered active incident
+      if (event.data.status === 'active') {
+        playBeep();
+      }
       // Re-fetch to get the authoritative list with correct status
       fetchIncidents().then(setIncidents);
     }
