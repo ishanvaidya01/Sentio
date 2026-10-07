@@ -1,10 +1,27 @@
-# Sentio
-**The Next-Generation Robot Telemetry & Observability Platform**
+<h1 align="center">Sentio</h1>
 
-Sentio is an intelligent, real-time observability platform that goes beyond simple sensor dashboards. It acts as the "black box" flight recorder for your robotics hardware, providing automated fault detection, live telemetry streams, and seamless hardware-agnostic integration.
+<h4 align="center">The Next-Generation Robot Telemetry & Observability Platform</h4>
 
-[Features](https://github.com/ishanvaidya01/Sentio#features) • [Why Sentio?](https://github.com/ishanvaidya01/Sentio#how-sentio-beats-the-competition) • [Architecture](https://github.com/ishanvaidya01/Sentio#architecture) • [Deployment Status](https://github.com/ishanvaidya01/Sentio#deployment-status) • [Getting Started](https://github.com/ishanvaidya01/Sentio#getting-started)
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/SSE-Streaming-blue" alt="SSE" />
+  <img src="https://img.shields.io/badge/Hardware-Ready-red" alt="Hardware Ready" />
+</p>
 
+<p align="center">
+  <em>Sentio is an intelligent, real-time observability platform that goes beyond simple sensor dashboards. It acts as the "black box" flight recorder for your robotics hardware, providing automated fault detection, live telemetry streams, and seamless hardware-agnostic integration.</em>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> • 
+  <a href="#how-sentio-beats-the-competition">Why Sentio?</a> • 
+  <a href="#architecture">Architecture</a> • 
+  <a href="#deployment-status">Deployment Status</a> • 
+  <a href="#getting-started">Getting Started</a>
+</p>
+
+---
 ## Features
 - **Real-Time Hardware Telemetry**: Sub-second data streaming powered by Server-Sent Events (SSE) that updates dynamic charts instantly without manual polling.
 - **Dynamic Alert Rules Engine**: Define edge-triggered safety parameters (e.g., `temperature > 70°C` or `battery < 20%`). Breaking a rule instantly flags the sensor and logs the anomaly.
