@@ -221,6 +221,35 @@ function App() {
             <IncidentLog incidents={incidents} />
           </div>
         </section>
+        {/* Footer */}
+        <footer style={{
+          marginTop: 48,
+          paddingTop: 20,
+          borderTop: '1px solid rgba(156,163,175,0.25)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 8,
+          fontSize: 12,
+          color: '#9ca3af',
+        }}>
+          <span>Sentio &mdash; Robot Telemetry Dashboard</span>
+          <div style={{ display: 'flex', gap: 20 }}>
+            <a href="/privacy" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
+            >Privacy Policy</a>
+            <a href="/terms" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
+            >Terms of Use</a>
+            <a href="https://github.com/ishanvaidya01/Sentio" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
+            >GitHub</a>
+          </div>
+        </footer>
       </main>
     </div>
   );
