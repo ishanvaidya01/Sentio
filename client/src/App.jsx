@@ -16,21 +16,29 @@ const playBeep = () => {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
     const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
     
-    osc.type = 'sine';
-    // 880Hz is a clear, attention-grabbing 'A5' note
-    osc.frequency.setValueAtTime(880, ctx.currentTime); 
-    
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5);
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    osc.start();
-    osc.stop(ctx.currentTime + 0.5);
+    // Play 3 rapid, harsh beeps (like a digital alarm)
+    for (let i = 0; i < 3; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'square'; // Square wave sounds harsh and buzzy
+      const startTime = ctx.currentTime + (i * 0.15); // Space them 150ms apart
+      
+      // Alternating pitch for a "siren" effect (high, lower, high)
+      osc.frequency.setValueAtTime(i % 2 === 0 ? 1200 : 900, startTime); 
+      
+      // Volume envelope for sharp, punchy bursts
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.08, startTime + 0.02);
+      gain.gain.linearRampToValueAtTime(0, startTime + 0.12);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 0.15);
+    }
   } catch (e) {
     console.warn('Audio beep blocked or failed', e);
   }
