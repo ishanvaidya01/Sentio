@@ -109,3 +109,14 @@ Sentio was designed with a premium, crisp, and professional aesthetic.
 We completely avoided generic dashboard templates, utilizing curated grayscale palettes, vibrant semantic accents (Emerald, Rose, Amber), and subtle shadows. Every interaction and live update is designed to feel responsive, clear, and hardware-accurate.
 
 Built with passion for the future of robotics observability.
+
+---
+
+## Developer
+
+**Ishan Vaidya**
+*Computer Science & Engineering Undergraduate @ Vellore Institute of Technology, Chennai*
+
+- **Location**: Pune, India
+- **Email**: [ishan.vaidya01@gmail.com](mailto:ishan.vaidya01@gmail.com)
+- **GitHub**: [@ishanvaidya01](https://github.com/ishanvaidya01)
