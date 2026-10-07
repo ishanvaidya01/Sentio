@@ -1,163 +1,83 @@
-# SensorScope
+# Sentio
+**The Next-Generation Robot Telemetry & Observability Platform**
 
-> Real-time robot telemetry dashboard — track sensor health, trigger alerts, and diagnose failures live.
+Sentio is an intelligent, real-time observability platform that goes beyond simple sensor dashboards. It acts as the "black box" flight recorder for your robotics hardware, providing automated fault detection, live telemetry streams, and seamless hardware-agnostic integration.
+
+[Features](https://github.com/ishanvaidya01/Sentio#features) • [Why Sentio?](https://github.com/ishanvaidya01/Sentio#how-sentio-beats-the-competition) • [Architecture](https://github.com/ishanvaidya01/Sentio#architecture) • [Deployment Status](https://github.com/ishanvaidya01/Sentio#deployment-status) • [Getting Started](https://github.com/ishanvaidya01/Sentio#getting-started)
 
 ## Features
+- **Real-Time Hardware Telemetry**: Sub-second data streaming powered by Server-Sent Events (SSE) that updates dynamic charts instantly without manual polling.
+- **Dynamic Alert Rules Engine**: Define edge-triggered safety parameters (e.g., `temperature > 70°C` or `battery < 20%`). Breaking a rule instantly flags the sensor and logs the anomaly.
+- **Immutable Incident Log**: The system's "Black Box". Every time a rule is broken or resolved, an exact timestamped entry is logged, making post-mortem hardware debugging completely deterministic.
+- **Red-Alert Audio Alarms**: Uses the browser's native `AudioContext` to generate a loud, sweeping Red Alert klaxon siren the instant a catastrophic hardware fault occurs.
+- **Integrated Hardware Simulator**: No Arduino plugged in? No problem. The backend includes a complete physics-based random-walk simulator with dedicated **Fault Injection** buttons (Sensor Glitch, Battery Drain, Obstacle) to test your safety rules.
+- **Data Export & Portability**: Instantly download the complete telemetry history as a CSV for deeper analysis.
 
-| Feature | Status |
-|---|---|
-| Robot simulator (temperature, distance, battery — every 2 s) | ✅ |
-| Accept real sensor readings via `POST /api/readings` | ✅ |
-| ESP32/Arduino-compatible payload format | ✅ |
-| Live sensor cards with latest value + trend indicator | ✅ |
-| Line charts — last 50 readings per sensor, per-sensor colors | ✅ |
-| Editable alert rules (sensor, operator, threshold, enabled) | ✅ |
-| Card turns red + incident logged when a rule breaks | ✅ |
-| Incident log with active/resolved filter | ✅ |
-| Human-readable incident messages | ✅ |
-| Server-Sent Events (SSE) live updates | ✅ |
-| SSE automatic reconnect with exponential backoff | ✅ |
-| Polling fallback if SSE unavailable | ✅ |
-| CSV export of all readings | ✅ |
-| Fault injection (battery drain, sensor glitch, obstacle) | ✅ |
-| Server-side validation (type, range, timestamp) | ✅ |
-| Responsive layout (360 px+) | ✅ |
+## How Sentio Beats the Competition
+While generic IoT dashboards like Grafana or basic web panels are great for general data, they lack the immediate, hardware-focused observability required for live robotics testing. Here's how Sentio stands out:
 
----
+| Feature | Sentio | Generic IoT Dashboards |
+|---|---|---|
+| **Core Focus** | Automated Safety & Observability | Static metric display |
+| **Fault Detection** | Dynamic Rule Engine with Edge-Triggering | Manual visual inspection |
+| **Alarms** | Jarring, native AudioContext Klaxons | Visual only or simple pings |
+| **Traceability** | Human-readable, timestamped Incident Log | Complex query logs |
+| **Integration** | ESP32/Arduino-ready flat JSON payloads | Complex proprietary schemas |
 
-## Quick Start
+In short: Generic dashboards show numbers. **Sentio actively monitors the health of your robot.**
 
-### 1. Server
+## Architecture
+Sentio is built on a robust, lightweight architecture designed for real-time concurrency and low latency.
 
+### Streaming Engine
+At the heart of the backend is the Event Emitter & SSE Engine. Instead of forcing the frontend to spam API requests (polling), the backend maintains a persistent Server-Sent Events stream. The moment a sensor reading arrives via a simple `POST` request from an Arduino, the Event Engine broadcasts the reading, triggers the Rule Engine, and pushes updates to all connected clients in milliseconds.
+
+### Tech Stack
+**Frontend:**
+- **React.js (Vite)** for lightning-fast UI rendering.
+- **Recharts** for rendering performant, animated telemetry history graphs.
+- **Vanilla CSS** with a robust, modern light-theme design system (Clean whites, precise typography, semantic status colors).
+
+**Backend:**
+- **Node.js & Express** for robust, high-performance API endpoints.
+- **Native Server-Sent Events (SSE)** for zero-dependency real-time communication.
+- **In-Memory Ring Buffers** to maintain a hyper-fast rolling history of the last 500 telemetry points without database latency.
+
+## Deployment Status
+Sentio is currently configured for local development and direct hardware integration. 
+
+The frontend can be deployed easily on static tiers (like Vercel or Cloudflare Pages), and the lightweight Express backend can run effortlessly on platforms like Render or Railway. Because the state is managed entirely in-memory, it requires zero external database infrastructure, making deployment incredibly fast and cost-effective.
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/ishanvaidya01/Sentio.git
+cd Sentio
+```
+
+### 2. Backend Setup
 ```bash
 cd server
 npm install
-cp .env.example .env   # edit PORT / CLIENT_ORIGIN if needed
-npm start              # production
-npm run dev            # development (hot-reload via node --watch)
+npm run dev # Starts the API, Simulator, and SSE stream on port 3000
 ```
 
-Server starts on **http://localhost:3000** and auto-starts the simulator.
-
-### 2. Client
-
+### 3. Frontend Setup
 ```bash
-cd client
+cd ../client
 npm install
-cp .env.example .env   # edit VITE_API_URL if server is not on :3000
-npm run dev
+npm run dev # Starts the Vite dev server on port 5173
 ```
 
-Client runs on **http://localhost:5173**.
-
----
-
-## API Reference
-
-### Readings
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/readings` | Submit a reading. Accepts single `{sensor, value}` or ESP32-style `{temperature, distance, battery}`. |
-| `GET`  | `/api/readings?sensor=&limit=` | Get last N readings (max 500). |
-| `GET`  | `/api/readings/export.csv` | Download all readings as CSV. |
-
-**POST body examples:**
-
-```json
-// Single sensor
-{ "sensor": "temperature", "value": 35.2 }
-
-// ESP32-style (all three at once)
-{ "temperature": 35.2, "distance": 42.1, "battery": 87.5 }
-```
-
-### Rules
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/rules` | Get all alert rules. |
-| `PUT` | `/api/rules` | Replace all alert rules (array, max 20). |
-
-**Rule object:**
-
-```json
-{ "id": "1", "sensor": "battery", "operator": "<", "threshold": 20, "enabled": true }
-```
-
-Operators: `<` `<=` `>` `>=`
-
-### Incidents
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/incidents` | List all incidents (newest first). Each has `status: "active" | "resolved"`. |
-
-### Simulator
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/simulator/start` | Start the simulator. |
-| `POST` | `/api/simulator/stop` | Stop the simulator. |
-| `GET`  | `/api/simulator/status` | Get `{ active, activeFault }`. |
-| `POST` | `/api/simulator/fault` | Inject a fault: `{ "type": "drain_battery" | "glitch_sensor" | "obstacle" }` |
-
-### Stream (SSE)
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/stream` | Server-Sent Events. Events: `reading`, `incident`, `rules`, `simulator`. |
-
-### Other
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | Returns `{ ok: true }`. |
-
----
-
-## Architecture
-
-```
-SensorScope/
-├── server/                   Node.js + Express (ES modules)
-│   ├── index.js              Entry — mounts routes, starts simulator
-│   ├── routes/
-│   │   ├── readings.js       POST/GET readings + CSV export
-│   │   ├── rules.js          GET/PUT rules + re-evaluation
-│   │   ├── incidents.js      GET incidents
-│   │   ├── simulator.js      Start/stop/fault injection
-│   │   └── stream.js         SSE endpoint
-│   ├── services/
-│   │   ├── simulator.js      Tick every 2s, fault modes
-│   │   ├── ruleEngine.js     Edge-triggered incident creation/resolution
-│   │   ├── store.js          In-memory ring buffer (500 readings/sensor)
-│   │   └── events.js         Node EventEmitter — decouples SSE from services
-│   └── validators.js         Sensor type + range validation
-│
-└── client/                   React 19 + Vite + Tailwind CSS v4
-    └── src/
-        ├── App.jsx            Main layout + state orchestration
-        ├── api.js             Typed fetch helpers
-        ├── hooks/useSSE.js    SSE with exponential-backoff reconnect
-        └── components/
-            ├── SensorCard.jsx         Value + trend + alert state
-            ├── LiveChart.jsx          Per-sensor color line chart + thresholds
-            ├── RulesPanel.jsx         Editable rule editor
-            ├── IncidentLog.jsx        Filtered log with human-readable messages
-            ├── SimulatorControls.jsx  Start/stop/fault buttons
-            └── ConnectionBadge.jsx    Live/Polling/Offline indicator
-```
-
----
-
-## Connecting a Real Arduino / ESP32
-
-Use `POST /api/readings` with the ESP32-style body. Example Arduino sketch fragment:
-
+### 4. Hardware Integration (Arduino/ESP32)
+Point your physical robot to the backend. Use `POST /api/readings` with a flat JSON body:
 ```cpp
 HTTPClient http;
-http.begin("http://<your-server>/api/readings");
+http.begin("http://<your-server-ip>:3000/api/readings");
 http.addHeader("Content-Type", "application/json");
 
 String payload = "{\"temperature\":" + String(temp, 2)
@@ -167,18 +87,8 @@ http.POST(payload);
 http.end();
 ```
 
----
+## UI/UX Design Philosophy
+Sentio was designed with a premium, crisp, and professional aesthetic. 
+We completely avoided generic dashboard templates, utilizing curated grayscale palettes, vibrant semantic accents (Emerald, Rose, Amber), and subtle shadows. Every interaction and live update is designed to feel responsive, clear, and hardware-accurate.
 
-## Deployment
-
-| Layer | Platform | Notes |
-|---|---|---|
-| Backend | Render (Web Service) | Set `PORT`, `CLIENT_ORIGIN`, `SIMULATOR_AUTOSTART=true`. Free tier spins down after inactivity — the "Connecting…" spinner handles cold starts. |
-| Frontend | Vercel | Set `VITE_API_URL` to the Render backend URL. |
-
----
-
-## Live Links
-
-- **Frontend**: [Placeholder — add after deploy]
-- **Backend**: [Placeholder — add after deploy]
+Built with passion for the future of robotics observability.
