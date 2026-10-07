@@ -144,35 +144,27 @@ function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '24px 32px', maxWidth: 1400, margin: '0 auto' }}>
-      {/* ── Header ── */}
-      <header style={{ marginBottom: 32, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
-            Sentio
-          </h1>
-          <p style={{ margin: '3px 0 0', fontSize: '13px', color: '#9ca3af' }}>Live Robot Telemetry</p>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <a
-            href={`${API_URL}/api/readings/export.csv`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: '12px', fontWeight: 500,
-              background: '#f3f4f6',
-              border: '1px solid rgba(156,163,175,0.4)',
-              color: '#374151',
-              padding: '6px 14px', borderRadius: 8,
-              textDecoration: 'none',
-              transition: 'background 0.15s',
-            }}
-          >
-            ↓ Export CSV
-          </a>
-          <ConnectionBadge status={sseStatus} />
-        </div>
-      </header>
+    <div style={{ padding: '24px 32px', maxWidth: 1400, margin: '0 auto' }}>
+      {/* ── Page sub-header: just the Export CSV + connection badge ── */}
+      <div style={{ marginBottom: 28, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12 }}>
+        <a
+          href={`${API_URL}/api/readings/export.csv`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontSize: '12px', fontWeight: 500,
+            background: '#f3f4f6',
+            border: '1px solid rgba(156,163,175,0.4)',
+            color: '#374151',
+            padding: '6px 14px', borderRadius: 8,
+            textDecoration: 'none',
+            transition: 'background 0.15s',
+          }}
+        >
+          Export CSV
+        </a>
+        <ConnectionBadge status={sseStatus} />
+      </div>
 
       <main style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         {/* ── Sensor Cards ── */}
@@ -221,35 +213,6 @@ function App() {
             <IncidentLog incidents={incidents} />
           </div>
         </section>
-        {/* Footer */}
-        <footer style={{
-          marginTop: 48,
-          paddingTop: 20,
-          borderTop: '1px solid rgba(156,163,175,0.25)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 8,
-          fontSize: 12,
-          color: '#9ca3af',
-        }}>
-          <span>Sentio &mdash; Robot Telemetry Dashboard</span>
-          <div style={{ display: 'flex', gap: 20 }}>
-            <a href="/privacy" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
-            >Privacy Policy</a>
-            <a href="/terms" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
-            >Terms of Use</a>
-            <a href="https://github.com/ishanvaidya01/Sentio" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none', borderBottom: '1px solid transparent', transition: 'color 0.15s, border-color 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.borderColor = '#374151'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = 'transparent'; }}
-            >GitHub</a>
-          </div>
-        </footer>
       </main>
     </div>
   );

@@ -1,24 +1,7 @@
 export default function PrivacyPolicy() {
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 32px 80px' }}>
-      <a
-        href="/"
-        style={{
-          display: 'inline-block',
-          marginBottom: 32,
-          fontSize: 13,
-          color: '#6b7280',
-          textDecoration: 'none',
-          borderBottom: '1px solid transparent',
-          transition: 'color 0.15s, border-color 0.15s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.borderColor = '#111827'; }}
-        onMouseLeave={e => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.borderColor = 'transparent'; }}
-      >
-        &larr; Back to Dashboard
-      </a>
-
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0 0 4px' }}>Privacy Policy</h1>
+<h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0 0 4px' }}>Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 40 }}>Effective date: October 2026</p>
 
       <Section title="1. Overview">
@@ -75,8 +58,11 @@ export default function PrivacyPolicy() {
       </Section>
 
       <Section title="9. Contact">
-        For questions about this policy or the Sentio project, open an issue on the{' '}
-        <a href="https://github.com/ishanvaidya01/Sentio" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
+        For questions about this policy, contact the developer directly:
+        <ul>
+          <li><strong>Ishan Vaidya</strong> &mdash; <a href="mailto:ishan.vaidya01@gmail.com">ishan.vaidya01@gmail.com</a></li>
+          <li>GitHub: <a href="https://github.com/ishanvaidya01/Sentio" target="_blank" rel="noopener noreferrer">github.com/ishanvaidya01/Sentio</a></li>
+        </ul>
       </Section>
     </div>
   );
