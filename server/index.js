@@ -28,7 +28,7 @@ app.use('/api/rules', rulesRouter);
 app.use('/api/incidents', incidentsRouter);
 app.use('/api/stream', streamRouter);
 
-if (process.env.SIMULATOR_AUTOSTART === 'true') {
+if (process.env.SIMULATOR_AUTOSTART !== 'false') {
   startSimulator();
 }
 

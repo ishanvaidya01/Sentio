@@ -85,8 +85,8 @@ function tick() {
   ];
 
   for (const r of readings) {
-    addReading(r);
+    const saved = addReading(r);
     evaluateReading(r);
-    // TODO: emit event
+    emitEvent('reading', saved);
   }
 }

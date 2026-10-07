@@ -1,5 +1,2 @@
 @import "tailwindcss";
-
-body {
-  @apply bg-zinc-950 text-zinc-100 antialiased;
-}
+@import "./App.css";

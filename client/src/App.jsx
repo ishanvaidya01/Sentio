@@ -9,53 +9,50 @@ import ConnectionBadge from './components/ConnectionBadge';
 import { useSSE } from './hooks/useSSE';
 
 const SENSORS = ['temperature', 'distance', 'battery'];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 function App() {
-  const [readings, setReadings] = useState({ temperature: [], distance: [], battery: [] });
-  const [rules, setRules] = useState([]);
-  const [incidents, setIncidents] = useState([]);
-  const [simStatus, setSimStatus] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [readings,   setReadings]   = useState({ temperature: [], distance: [], battery: [] });
+  const [rules,      setRules]      = useState([]);
+  const [incidents,  setIncidents]  = useState([]);
+  const [simStatus,  setSimStatus]  = useState({});
+  const [loading,    setLoading]    = useState(true);
 
   const loadData = useCallback(async () => {
     try {
       const [temp, dist, batt, rls, incs, sim] = await Promise.all([
         fetchReadings('temperature', 50),
-        fetchReadings('distance', 50),
-        fetchReadings('battery', 50),
+        fetchReadings('distance',    50),
+        fetchReadings('battery',     50),
         fetchRules(),
         fetchIncidents(),
-        fetchSimulatorStatus()
+        fetchSimulatorStatus(),
       ]);
       setReadings({ temperature: temp, distance: dist, battery: batt });
       setRules(rls);
       setIncidents(incs);
       setSimStatus(sim);
     } catch (err) {
-      console.error("Poll error:", err);
+      console.error('Poll error:', err);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useEffect(() => { loadData(); }, [loadData]);
 
   const handleSSE = useCallback((event) => {
-    if (event.type === 'fallback_poll') {
-      loadData();
-      return;
-    }
-    
+    if (event.type === 'fallback_poll') { loadData(); return; }
+
     if (event.type === 'reading') {
       setReadings(prev => {
-        const sensorList = [...prev[event.data.sensor], event.data];
-        if (sensorList.length > 50) sensorList.shift();
-        return { ...prev, [event.data.sensor]: sensorList };
+        const list = [...prev[event.data.sensor], event.data];
+        if (list.length > 50) list.shift();
+        return { ...prev, [event.data.sensor]: list };
       });
     }
     if (event.type === 'incident') {
+      // Re-fetch to get the authoritative list with correct status
       fetchIncidents().then(setIncidents);
     }
     if (event.type === 'rules') {
@@ -66,44 +63,72 @@ function App() {
     }
   }, [loadData]);
 
-  const status = useSSE(handleSSE);
+  const sseStatus = useSSE(handleSSE);
 
+  /** Latest reading value for a sensor */
   const getLatest = (sensor) => {
     const list = readings[sensor];
     return list[list.length - 1] || {};
   };
 
-  const hasActiveIncident = (sensor) => {
-    return incidents.some(i => i.sensor === sensor && i.status === 'active');
-  };
+  /** Is there an active incident for this sensor? */
+  const hasActiveIncident = (sensor) =>
+    incidents.some(i => i.sensor === sensor && i.status === 'active');
 
-  const getThresholdLine = (sensor) => {
-    const rule = rules.find(r => r.sensor === sensor && r.enabled);
-    return rule ? rule.threshold : null;
-  };
+  /**
+   * All threshold lines for a sensor (supports multiple rules per sensor).
+   * Returns array of { value, operator }.
+   */
+  const getThresholds = (sensor) =>
+    rules
+      .filter(r => r.sensor === sensor && r.enabled)
+      .map(r => ({ value: r.threshold, operator: r.operator }));
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center">
-        <p className="text-zinc-500">Waking up the server, this can take up to a minute...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <div className="flex gap-1.5">
+          {[0, 1, 2].map(i => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full bg-emerald-500"
+              style={{ animation: `pulse-ring 1.4s ease-out infinite ${i * 0.2}s` }}
+            />
+          ))}
+        </div>
+        <p className="text-zinc-500 text-sm">Connecting to SensorScope…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-4 md:p-8">
-      <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+    <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto">
+      {/* ── Header ── */}
+      <header className="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">SensorScope</h1>
-          <p className="text-zinc-400">Live Telemetry Dashboard</p>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            SensorScope
+          </h1>
+          <p className="text-zinc-500 text-sm mt-0.5">Live Robot Telemetry</p>
         </div>
-        <ConnectionBadge status={status} />
+        <div className="flex items-center gap-3">
+          <a
+            href={`${API_URL}/api/readings/export.csv`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 text-zinc-300 px-3 py-1.5 rounded-xl transition-colors font-medium"
+          >
+            ↓ Export CSV
+          </a>
+          <ConnectionBadge status={sseStatus} />
+        </div>
       </header>
 
-      <main className="space-y-8">
+      <main className="space-y-6">
+        {/* ── Sensor Cards ── */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Live Sensors</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Live Sensors</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SENSORS.map(sensor => {
               const latest = getLatest(sensor);
               return (
@@ -114,41 +139,35 @@ function App() {
                   unit={latest.unit}
                   timestamp={latest.timestamp}
                   hasAlert={hasActiveIncident(sensor)}
+                  history={readings[sensor]}
                 />
               );
             })}
           </div>
         </section>
 
+        {/* ── Charts ── */}
         <section>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Telemetry History</h2>
-            <a 
-              href={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/readings/export.csv`} 
-              target="_blank" rel="noopener noreferrer"
-              className="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-lg transition-colors border border-zinc-700"
-            >
-              Export CSV
-            </a>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Telemetry History (last 50 readings)</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SENSORS.map(sensor => (
-              <LiveChart 
-                key={sensor} 
-                sensor={sensor} 
-                data={readings[sensor]} 
-                thresholdLine={getThresholdLine(sensor)}
+              <LiveChart
+                key={sensor}
+                sensor={sensor}
+                data={readings[sensor]}
+                thresholds={getThresholds(sensor)}
               />
             ))}
           </div>
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-1 space-y-4">
+        {/* ── Controls + Incident Log ── */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-1 flex flex-col gap-4">
             <SimulatorControls status={simStatus} onUpdate={loadData} />
-            <RulesPanel rules={rules} onRulesUpdated={(newRules) => setRules(newRules)} />
+            <RulesPanel rules={rules} onRulesUpdated={setRules} />
           </div>
-          <div className="lg:col-span-2 h-[500px]">
+          <div className="lg:col-span-2" style={{ minHeight: '420px' }}>
             <IncidentLog incidents={incidents} />
           </div>
         </section>

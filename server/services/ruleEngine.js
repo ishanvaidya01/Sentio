@@ -29,6 +29,17 @@ export function evaluateReading(reading) {
       if (activeIncident) {
         resolveIncident(activeIncident.id);
       }
+      const opVerb =
+        violatedRule.operator === '<'  ? 'dropped below' :
+        violatedRule.operator === '<=' ? 'is at or below' :
+        violatedRule.operator === '>'  ? 'exceeded'       :
+        violatedRule.operator === '>=' ? 'reached or exceeded' :
+        violatedRule.operator;
+      const unitSuffix =
+        reading.sensor === 'battery'     ? '%' :
+        reading.sensor === 'temperature' ? '°C' :
+        reading.sensor === 'distance'    ? ' cm' : '';
+
       // Create new incident
       const newIncident = {
         id: Date.now().toString() + Math.floor(Math.random() * 1000),
@@ -37,7 +48,7 @@ export function evaluateReading(reading) {
         operator: violatedRule.operator,
         threshold: violatedRule.threshold,
         value: reading.value,
-        message: `${reading.sensor} reading ${reading.value} ${violatedRule.operator} ${violatedRule.threshold}`,
+        message: `${reading.sensor.charAt(0).toUpperCase() + reading.sensor.slice(1)} ${opVerb} ${violatedRule.threshold}${unitSuffix} (reading: ${reading.value}${unitSuffix})`,
         triggeredAt: new Date().toISOString(),
         resolvedAt: null,
         status: 'active'
@@ -48,8 +59,8 @@ export function evaluateReading(reading) {
   } else {
     // No rules violated, resolve active incident if any
     if (activeIncident) {
-      resolveIncident(activeIncident.id);
-      emitEvent('incident', activeIncident);
+      resolveIncident(activeIncident.id);       // mutates status → 'resolved' first
+      emitEvent('incident', activeIncident);    // then broadcast the resolved state
     }
   }
 }
