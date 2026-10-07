@@ -17,27 +17,29 @@ const playBeep = () => {
     if (!AudioContext) return;
     const ctx = new AudioContext();
     
-    // Play 3 rapid, harsh beeps (like a digital alarm)
-    for (let i = 0; i < 3; i++) {
+    // Play 5 sweeping bursts (Submarine / Red Alert Klaxon style)
+    for (let i = 0; i < 5; i++) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
-      osc.type = 'square'; // Square wave sounds harsh and buzzy
-      const startTime = ctx.currentTime + (i * 0.15); // Space them 150ms apart
+      // Sawtooth wave is extremely buzzy and grating (the "alarm" sound)
+      osc.type = 'sawtooth'; 
+      const startTime = ctx.currentTime + (i * 0.4); 
       
-      // Alternating pitch for a "siren" effect (high, lower, high)
-      osc.frequency.setValueAtTime(i % 2 === 0 ? 1200 : 900, startTime); 
+      // Klaxon sweep: Start very high (1200Hz) and dive bomb down to 400Hz
+      osc.frequency.setValueAtTime(1200, startTime);
+      osc.frequency.exponentialRampToValueAtTime(400, startTime + 0.3);
       
-      // Volume envelope for sharp, punchy bursts
+      // Loud, aggressive volume envelope
       gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.08, startTime + 0.02);
-      gain.gain.linearRampToValueAtTime(0, startTime + 0.12);
+      gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02); // VERY loud punch
+      gain.gain.linearRampToValueAtTime(0, startTime + 0.35);   // Quick fade
       
       osc.connect(gain);
       gain.connect(ctx.destination);
       
       osc.start(startTime);
-      osc.stop(startTime + 0.15);
+      osc.stop(startTime + 0.35);
     }
   } catch (e) {
     console.warn('Audio beep blocked or failed', e);
