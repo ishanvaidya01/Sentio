@@ -46,22 +46,47 @@ app.use((err, req, res, next) => {
 // Root route friendly message
 app.get('/', (req, res) => {
   res.send(`
+    <!DOCTYPE html>
     <html>
       <head>
-        <title>Sentio API</title>
+        <title>Sentio API Server</title>
         <style>
-          body { font-family: system-ui, sans-serif; background: #111827; color: #f9fafb; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-          .container { text-align: center; background: #1f2937; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-          h1 { margin-top: 0; color: #10b981; }
-          p { color: #9ca3af; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111827;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+          }
+          h1 {
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+          }
+          p {
+            font-size: 14px;
+            color: #4b5563;
+          }
+          .status {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+          }
         </style>
       </head>
       <body>
-        <div class="container">
-          <h1>Sentio Backend is Running 🚀</h1>
-          <p>This is the API server for the Sentio Dashboard.</p>
-          <p>The frontend will automatically connect to this service.</p>
-        </div>
+        <h1>Sentio Telemetry API</h1>
+        <p>System Status: <span class="status">Operational</span></p>
+        <p>This service provides WebSocket streams and REST endpoints for the Sentio Dashboard. Direct browser access is not intended.</p>
       </body>
     </html>
   `);
