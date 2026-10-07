@@ -5,9 +5,9 @@ import {
 
 /** Per-sensor stroke colors matching CSS custom properties */
 const SENSOR_COLORS = {
-  temperature: '#f97316',  // orange
-  distance:    '#06b6d4',  // cyan
-  battery:     '#22c55e',  // green
+  temperature: '#c2410c',  // orange-700
+  distance:    '#0369a1',  // sky-700
+  battery:     '#15803d',  // green-700
 };
 
 const SENSOR_LABELS = {
@@ -20,11 +20,15 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const v = payload[0]?.value;
   return (
-    <div className="bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 shadow-xl text-xs">
-      <p className="text-zinc-400 mb-1">
+    <div style={{
+      background: '#fff', border: '1px solid rgba(156,163,175,0.4)',
+      borderRadius: 10, padding: '7px 12px',
+      boxShadow: '0 4px 14px rgba(0,0,0,0.1)', fontSize: '12px',
+    }}>
+      <p style={{ color: '#9ca3af', marginBottom: 3 }}>
         {new Date(label).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
       </p>
-      <p className="mono font-semibold text-zinc-100">{v !== undefined ? v : '—'}</p>
+      <p className="mono" style={{ fontWeight: 600, color: '#111827' }}>{v !== undefined ? v : '—'}</p>
     </div>
   );
 }
@@ -37,14 +41,23 @@ export default function LiveChart({ data, sensor, thresholds = [] }) {
   const label = SENSOR_LABELS[sensor] ?? sensor;
 
   return (
-    <div className={`bg-zinc-900/80 rounded-2xl border border-zinc-800/60 p-4 sensor-${sensor} sensor-accent-border`}>
-      <h3 className="text-xs font-semibold text-zinc-400 mb-3 uppercase tracking-wider">{label}</h3>
+    <div
+      className={`sensor-${sensor} sensor-accent-border`}
+      style={{
+        background: '#fff',
+        borderRadius: 14,
+        border: '1px solid rgba(156,163,175,0.35)',
+        padding: '16px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      }}
+    >
+      <h3 style={{ margin: '0 0 12px', fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</h3>
       <div className="h-36">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -8 }}>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(63,63,70,0.4)"
+              stroke="rgba(209,213,219,0.6)"
               vertical={false}
             />
             <XAxis
@@ -52,15 +65,15 @@ export default function LiveChart({ data, sensor, thresholds = [] }) {
               tickFormatter={(t) =>
                 new Date(t).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
               }
-              stroke="#3f3f46"
-              tick={{ fill: '#52525b', fontSize: 9 }}
+              stroke="#e5e7eb"
+              tick={{ fill: '#9ca3af', fontSize: 9 }}
               tickLine={false}
               axisLine={false}
               interval="preserveStartEnd"
             />
             <YAxis
-              stroke="#3f3f46"
-              tick={{ fill: '#52525b', fontSize: 9, fontFamily: 'var(--font-mono)' }}
+              stroke="#e5e7eb"
+              tick={{ fill: '#9ca3af', fontSize: 9, fontFamily: 'var(--font-mono)' }}
               tickLine={false}
               axisLine={false}
               domain={['auto', 'auto']}
@@ -89,10 +102,10 @@ export default function LiveChart({ data, sensor, thresholds = [] }) {
               type="monotone"
               dataKey="value"
               stroke={color}
-              strokeWidth={2}
+              strokeWidth={2.5}
               dot={false}
               isAnimationActive={false}
-              activeDot={{ r: 4, fill: color, stroke: '#18181b', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: color, stroke: '#fff', strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>

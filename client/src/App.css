@@ -1,5 +1,5 @@
 /* ============================================================
-   SensorScope Design System
+   Sentio Design System — Light Theme
    ============================================================ */
 
 :root {
@@ -7,28 +7,37 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Sensor brand colors */
-  --color-temperature: #f97316;   /* orange */
-  --color-distance:    #06b6d4;   /* cyan */
-  --color-battery:     #22c55e;   /* green */
+  --color-temperature: #c2410c;   /* orange-700 — vivid on white */
+  --color-distance:    #0369a1;   /* sky-700 */
+  --color-battery:     #15803d;   /* green-700 */
 
   /* Alert palette */
-  --color-alert:       #ef4444;
-  --color-alert-dim:   rgba(239, 68, 68, 0.15);
-  --color-alert-border: rgba(239, 68, 68, 0.35);
-  --color-alert-glow:  0 0 20px rgba(239, 68, 68, 0.25);
+  --color-alert:        #dc2626;
+  --color-alert-dim:    rgba(220, 38, 38, 0.07);
+  --color-alert-border: rgba(220, 38, 38, 0.22);
+  --color-alert-glow:   0 0 0 3px rgba(220, 38, 38, 0.10);
 
-  /* Status */
-  --color-ok:          #22c55e;
-  --color-ok-dim:      rgba(34, 197, 94, 0.15);
+  /* Status OK */
+  --color-ok:     #15803d;
+  --color-ok-dim: rgba(21, 128, 61, 0.09);
 
-  /* Surfaces */
-  --surface-0:  #09090b;   /* zinc-950 */
-  --surface-1:  #18181b;   /* zinc-900 */
-  --surface-2:  #27272a;   /* zinc-800 */
-  --surface-3:  #3f3f46;   /* zinc-700 */
+  /* Light surfaces */
+  --surface-page:   #f3f4f6;   /* gray-100 */
+  --surface-0:      #ffffff;
+  --surface-1:      #f9fafb;   /* gray-50 */
+  --surface-2:      #f1f2f4;
+  --surface-3:      #e5e7eb;   /* gray-200 */
 
-  --border:     rgba(63, 63, 70, 0.6);
-  --border-strong: rgba(63, 63, 70, 0.9);
+  --text-primary:   #111827;  /* gray-900 */
+  --text-secondary: #4b5563;  /* gray-600 */
+  --text-muted:     #9ca3af;  /* gray-400 */
+
+  --border:        rgba(156, 163, 175, 0.35);
+  --border-strong: rgba(107, 114, 128, 0.45);
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-hover: 0 4px 14px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-panel: 0 1px 4px rgba(0,0,0,0.05);
 }
 
 /* ============================================================
@@ -44,56 +53,51 @@ html, body {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--surface-0);
-  color: #f4f4f5;   /* zinc-100 */
+  background-color: var(--surface-page);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================================
-   Scrollbar (dark, minimal)
+   Scrollbar
    ============================================================ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: var(--surface-3);
   border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover { background: #52525b; }
+::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
 
 /* ============================================================
    Animations
    ============================================================ */
 @keyframes pulse-ring {
-  0%   { transform: scale(1);   opacity: 0.8; }
-  70%  { transform: scale(1.6); opacity: 0; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0%   { transform: scale(1);   opacity: 0.85; }
+  70%  { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.7); opacity: 0; }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes shimmer {
-  from { background-position: -200% 0; }
-  to   { background-position: 200% 0; }
-}
-
 @keyframes alert-pulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
-  50%       { box-shadow: 0 0 24px rgba(239, 68, 68, 0.4); }
+  0%, 100% { box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.10); }
+  50%       { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.20); }
 }
 
 /* ============================================================
-   Utility helpers (used in JSX via className)
+   Utility helpers
    ============================================================ */
 .mono { font-family: var(--font-mono); }
 
 .live-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--color-ok);
   position: relative;
@@ -104,39 +108,45 @@ body {
   inset: 0;
   border-radius: 50%;
   background: var(--color-ok);
-  animation: pulse-ring 1.6s ease-out infinite;
+  animation: pulse-ring 1.8s ease-out infinite;
 }
 
 /* Sensor card alert state */
 .card-alert {
-  animation: alert-pulse 2s ease-in-out infinite;
+  animation: alert-pulse 2.2s ease-in-out infinite;
 }
 
 /* Incident entry animation */
 .incident-entry {
-  animation: fade-in-up 0.25s ease-out both;
-}
-
-/* Skeleton shimmer */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--surface-1) 25%,
-    var(--surface-2) 50%,
-    var(--surface-1) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  animation: fade-in-up 0.22s ease-out both;
 }
 
 /* ============================================================
-   Sensor accent borders (applied per-sensor)
+   Sensor accent borders
    ============================================================ */
 .sensor-temperature { --sensor-color: var(--color-temperature); }
 .sensor-distance    { --sensor-color: var(--color-distance); }
 .sensor-battery     { --sensor-color: var(--color-battery); }
 
 .sensor-accent-border {
-  border-top: 2px solid var(--sensor-color, #52525b);
+  border-top: 3px solid var(--sensor-color, #9ca3af);
+}
+
+/* ============================================================
+   Form elements — clean light style
+   ============================================================ */
+select, input[type="number"] {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  background: var(--surface-0);
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+select:focus, input[type="number"]:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }

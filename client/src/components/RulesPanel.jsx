@@ -48,42 +48,114 @@ export default function RulesPanel({ rules, onRulesUpdated }) {
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-zinc-100">Alert Rules</h2>
-        <button onClick={save} disabled={saving} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors">
-          <Save size={16} />
-          {saving ? 'Saving...' : 'Save Rules'}
+    <div style={{
+      background: '#fff',
+      border: '1px solid rgba(156,163,175,0.35)',
+      borderRadius: 14,
+      padding: '18px 20px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <h2 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#111827' }}>Alert Rules</h2>
+        <button
+          onClick={save}
+          disabled={saving}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: saving ? '#e0e7ff' : '#4f46e5',
+            color: saving ? '#6b7280' : '#fff',
+            border: 'none', borderRadius: 8,
+            padding: '6px 12px', fontSize: '12px', fontWeight: 600,
+            cursor: saving ? 'not-allowed' : 'pointer',
+            transition: 'background 0.15s',
+          }}
+        >
+          <Save size={13} />
+          {saving ? 'Saving…' : 'Save Rules'}
         </button>
       </div>
 
-      {error && <div className="mb-4 text-sm text-red-400 bg-red-950/40 p-2 rounded border border-red-900/50">{error}</div>}
+      {error && (
+        <div style={{
+          marginBottom: 12, fontSize: '12px', color: '#dc2626',
+          background: 'rgba(220,38,38,0.07)', padding: '8px 10px',
+          borderRadius: 8, border: '1px solid rgba(220,38,38,0.18)',
+        }}>{error}</div>
+      )}
 
-      <div className="space-y-2">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {localRules.map(rule => (
-          <div key={rule.id} className="flex flex-wrap items-center gap-2 p-2 bg-zinc-950/50 rounded border border-zinc-800 text-sm">
-            <select className="bg-zinc-800 border-zinc-700 rounded p-1 text-zinc-200 outline-none" value={rule.sensor} onChange={(e) => handleChange(rule.id, 'sensor', e.target.value)}>
+          <div key={rule.id} style={{
+            display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6,
+            padding: '8px 10px',
+            background: '#f9fafb',
+            border: '1px solid rgba(156,163,175,0.3)',
+            borderRadius: 10,
+          }}>
+            <select
+              value={rule.sensor}
+              onChange={e => handleChange(rule.id, 'sensor', e.target.value)}
+            >
               {SENSORS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
-            <select className="bg-zinc-800 border-zinc-700 rounded p-1 text-zinc-200 outline-none" value={rule.operator} onChange={(e) => handleChange(rule.id, 'operator', e.target.value)}>
+            <select
+              value={rule.operator}
+              onChange={e => handleChange(rule.id, 'operator', e.target.value)}
+            >
               {OPERATORS.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
-            <input type="number" className="bg-zinc-800 border-zinc-700 rounded p-1 text-zinc-200 outline-none w-20" value={rule.threshold} onChange={(e) => handleChange(rule.id, 'threshold', e.target.value)} />
-            <label className="flex items-center gap-1 ml-auto text-zinc-400 cursor-pointer">
-              <input type="checkbox" checked={rule.enabled} onChange={(e) => handleChange(rule.id, 'enabled', e.target.checked)} className="accent-blue-500" />
+            <input
+              type="number"
+              value={rule.threshold}
+              onChange={e => handleChange(rule.id, 'threshold', e.target.value)}
+              style={{ width: 72 }}
+            />
+            <label style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              marginLeft: 'auto', fontSize: '12px', color: '#6b7280', cursor: 'pointer',
+            }}>
+              <input
+                type="checkbox"
+                checked={rule.enabled}
+                onChange={e => handleChange(rule.id, 'enabled', e.target.checked)}
+                style={{ accentColor: '#4f46e5', width: 13, height: 13 }}
+              />
               Enabled
             </label>
-            <button onClick={() => deleteRule(rule.id)} className="text-zinc-500 hover:text-red-400 p-1 rounded hover:bg-red-950/40 transition-colors">
-              <Trash2 size={16} />
+            <button
+              onClick={() => deleteRule(rule.id)}
+              style={{
+                background: 'none', border: 'none', padding: '4px', borderRadius: 6,
+                cursor: 'pointer', color: '#9ca3af', transition: 'color 0.15s',
+                display: 'flex', alignItems: 'center',
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#dc2626'}
+              onMouseLeave={e => e.currentTarget.style.color = '#9ca3af'}
+            >
+              <Trash2 size={14} />
             </button>
           </div>
         ))}
-        {localRules.length === 0 && <p className="text-sm text-zinc-500 italic">No rules defined.</p>}
+        {localRules.length === 0 && (
+          <p style={{ fontSize: '13px', color: '#9ca3af', fontStyle: 'italic', margin: 0 }}>No rules defined.</p>
+        )}
       </div>
 
-      <button onClick={addRule} disabled={localRules.length >= 20} className="mt-4 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-        <Plus size={16} /> Add Rule
+      <button
+        onClick={addRule}
+        disabled={localRules.length >= 20}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          marginTop: 14, background: 'none', border: 'none',
+          fontSize: '13px', fontWeight: 500,
+          color: localRules.length >= 20 ? '#9ca3af' : '#4f46e5',
+          cursor: localRules.length >= 20 ? 'not-allowed' : 'pointer',
+          padding: 0,
+        }}
+      >
+        <Plus size={14} /> Add Rule
       </button>
     </div>
   );
 }
+

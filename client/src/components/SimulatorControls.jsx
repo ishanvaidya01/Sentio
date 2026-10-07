@@ -7,24 +7,27 @@ const FAULT_BUTTONS = [
     icon: Zap,
     label: 'Sensor Glitch',
     description: 'Wild temp spike for ~6s',
-    hoverClass: 'hover:border-orange-500/50 hover:bg-orange-950/20',
-    iconClass: 'text-orange-400',
+    color: '#c2410c',
+    bg: 'rgba(194,65,12,0.07)',
+    border: 'rgba(194,65,12,0.20)',
   },
   {
     type: 'drain_battery',
     icon: BatteryLow,
     label: 'Drain Battery',
     description: 'Sharp 25% drop',
-    hoverClass: 'hover:border-red-500/50 hover:bg-red-950/20',
-    iconClass: 'text-red-400',
+    color: '#dc2626',
+    bg: 'rgba(220,38,38,0.07)',
+    border: 'rgba(220,38,38,0.20)',
   },
   {
     type: 'obstacle',
     icon: AlertOctagon,
     label: 'Obstacle',
     description: 'Distance < 5 cm for 10s',
-    hoverClass: 'hover:border-yellow-500/50 hover:bg-yellow-950/20',
-    iconClass: 'text-yellow-400',
+    color: '#b45309',
+    bg: 'rgba(180,83,9,0.07)',
+    border: 'rgba(180,83,9,0.20)',
   },
 ];
 
@@ -36,65 +39,115 @@ export default function SimulatorControls({ status, onUpdate }) {
   const handleFault = async (type) => { await injectFault(type); onUpdate(); };
 
   return (
-    <div className="bg-zinc-900/80 border border-zinc-800/60 p-4 rounded-2xl">
+    <div style={{
+      background: '#fff',
+      border: '1px solid rgba(156,163,175,0.35)',
+      borderRadius: 14,
+      padding: '18px 20px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    }}>
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-base font-semibold text-zinc-100">Simulator</h2>
-        <div className="flex items-center gap-2 text-xs">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <h2 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#111827' }}>Simulator</h2>
+        <div>
           {active ? (
-            <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-950/40 border border-emerald-900/50 px-2 py-1 rounded-full font-medium">
-              <span
-                className="w-1.5 h-1.5 rounded-full bg-emerald-400"
-                style={{ animation: 'pulse-ring 1.6s ease-out infinite' }}
-              />
+            <span style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              fontSize: '11px', fontWeight: 600,
+              color: '#15803d',
+              background: 'rgba(21,128,61,0.09)',
+              border: '1px solid rgba(21,128,61,0.18)',
+              padding: '3px 10px', borderRadius: 20,
+            }}>
+              <span style={{
+                width: 6, height: 6, borderRadius: '50%',
+                background: '#15803d', display: 'inline-block',
+                animation: 'pulse-ring 1.8s ease-out infinite',
+              }} />
               Running
             </span>
           ) : (
-            <span className="text-zinc-500 font-medium">Stopped</span>
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 500 }}>Stopped</span>
           )}
         </div>
       </div>
 
       {/* Start / Stop */}
-      <div className="flex gap-2 mb-5">
+      <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
         <button
           id="sim-start-btn"
           onClick={handleStart}
           disabled={active}
-          className="flex-1 flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white py-2 rounded-xl text-sm font-medium transition-colors"
+          style={{
+            flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 7,
+            background: active ? '#d1fae5' : '#15803d',
+            color: active ? '#6b7280' : '#fff',
+            border: 'none', borderRadius: 10,
+            padding: '9px 0', fontSize: '13px', fontWeight: 600,
+            cursor: active ? 'not-allowed' : 'pointer',
+            transition: 'background 0.15s, opacity 0.15s',
+            opacity: active ? 0.55 : 1,
+          }}
         >
-          <Play size={14} /> Start
+          <Play size={13} /> Start
         </button>
         <button
           id="sim-stop-btn"
           onClick={handleStop}
           disabled={!active}
-          className="flex-1 flex justify-center items-center gap-2 bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40 disabled:cursor-not-allowed text-white py-2 rounded-xl text-sm font-medium transition-colors"
+          style={{
+            flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 7,
+            background: !active ? '#f3f4f6' : '#f3f4f6',
+            color: !active ? '#9ca3af' : '#374151',
+            border: '1px solid rgba(107,114,128,0.25)',
+            borderRadius: 10,
+            padding: '9px 0', fontSize: '13px', fontWeight: 600,
+            cursor: !active ? 'not-allowed' : 'pointer',
+            transition: 'background 0.15s',
+            opacity: !active ? 0.5 : 1,
+          }}
         >
-          <Square size={14} /> Stop
+          <Square size={13} /> Stop
         </button>
       </div>
 
       {/* Fault Injection */}
-      <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Inject Fault</p>
-      <div className="grid grid-cols-3 gap-2">
-        {FAULT_BUTTONS.map(({ type, icon: Icon, label, description, hoverClass, iconClass }) => (
+      <p style={{ margin: '0 0 10px', fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+        Inject Fault
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        {FAULT_BUTTONS.map(({ type, icon: Icon, label, description, color, bg, border }) => (
           <button
             key={type}
             id={`fault-${type}-btn`}
             onClick={() => handleFault(type)}
             title={description}
-            className={`flex flex-col items-center gap-1.5 bg-zinc-950/60 border border-zinc-800 ${hoverClass} text-zinc-300 p-2.5 rounded-xl text-xs transition-all duration-200`}
+            style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+              background: bg,
+              border: `1px solid ${border}`,
+              borderRadius: 10, padding: '10px 6px',
+              cursor: 'pointer', transition: 'background 0.15s, transform 0.1s',
+              color: '#374151', fontSize: '11px', fontWeight: 500,
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
           >
-            <Icon size={18} className={iconClass} />
-            <span className="text-center leading-tight">{label}</span>
+            <Icon size={16} style={{ color }} />
+            <span style={{ textAlign: 'center', lineHeight: 1.3 }}>{label}</span>
           </button>
         ))}
       </div>
 
       {/* Active fault indicator */}
       {activeFault && (
-        <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-orange-300 bg-orange-950/30 border border-orange-900/40 rounded-lg px-2 py-1.5">
+        <div style={{
+          marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          fontSize: '12px', color: '#b45309',
+          background: 'rgba(180,83,9,0.07)',
+          border: '1px solid rgba(180,83,9,0.18)',
+          borderRadius: 8, padding: '6px 10px',
+        }}>
           <Zap size={12} />
           <span>Fault active: <strong>{activeFault.replace(/_/g, ' ')}</strong></span>
         </div>
@@ -102,3 +155,4 @@ export default function SimulatorControls({ status, onUpdate }) {
     </div>
   );
 }
+

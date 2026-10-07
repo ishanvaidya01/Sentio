@@ -86,37 +86,48 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="flex gap-1.5">
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', gap: 6 }}>
           {[0, 1, 2].map(i => (
             <div
               key={i}
-              className="w-2 h-2 rounded-full bg-emerald-500"
-              style={{ animation: `pulse-ring 1.4s ease-out infinite ${i * 0.2}s` }}
+              style={{
+                width: 8, height: 8, borderRadius: '50%',
+                background: '#15803d',
+                animation: `pulse-ring 1.4s ease-out infinite ${i * 0.2}s`,
+              }}
             />
           ))}
         </div>
-        <p className="text-zinc-500 text-sm">Connecting to SensorScope…</p>
+        <p style={{ color: '#9ca3af', fontSize: '13px', margin: 0 }}>Connecting to Sentio…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto">
+    <div style={{ minHeight: '100vh', padding: '24px 32px', maxWidth: 1400, margin: '0 auto' }}>
       {/* ── Header ── */}
-      <header className="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
+      <header style={{ marginBottom: 32, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            SensorScope
+          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
+            Sentio
           </h1>
-          <p className="text-zinc-500 text-sm mt-0.5">Live Robot Telemetry</p>
+          <p style={{ margin: '3px 0 0', fontSize: '13px', color: '#9ca3af' }}>Live Robot Telemetry</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <a
             href={`${API_URL}/api/readings/export.csv`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 text-zinc-300 px-3 py-1.5 rounded-xl transition-colors font-medium"
+            style={{
+              fontSize: '12px', fontWeight: 500,
+              background: '#f3f4f6',
+              border: '1px solid rgba(156,163,175,0.4)',
+              color: '#374151',
+              padding: '6px 14px', borderRadius: 8,
+              textDecoration: 'none',
+              transition: 'background 0.15s',
+            }}
           >
             ↓ Export CSV
           </a>
@@ -124,10 +135,10 @@ function App() {
         </div>
       </header>
 
-      <main className="space-y-6">
+      <main style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         {/* ── Sensor Cards ── */}
         <section>
-          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Live Sensors</h2>
+          <h2 style={{ margin: '0 0 12px', fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Live Sensors</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SENSORS.map(sensor => {
               const latest = getLatest(sensor);
@@ -148,7 +159,7 @@ function App() {
 
         {/* ── Charts ── */}
         <section>
-          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Telemetry History (last 50 readings)</h2>
+          <h2 style={{ margin: '0 0 12px', fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Telemetry History (last 50 readings)</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SENSORS.map(sensor => (
               <LiveChart

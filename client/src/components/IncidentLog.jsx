@@ -4,9 +4,9 @@ import { AlertTriangle, CheckCircle2, Filter } from 'lucide-react';
 const UNIT_DISPLAY = { degC: '°C', cm: 'cm', '%': '%' };
 
 const SENSOR_COLORS = {
-  temperature: 'text-orange-400',
-  distance:    'text-cyan-400',
-  battery:     'text-green-400',
+  temperature: '#c2410c',
+  distance:    '#0369a1',
+  battery:     '#15803d',
 };
 
 /** Format a human-readable incident message */
@@ -50,38 +50,52 @@ export default function IncidentLog({ incidents }) {
   const activeCount = incidents.filter(i => i.status === 'active').length;
 
   return (
-    <div className="bg-zinc-900/80 border border-zinc-800/60 p-4 rounded-2xl h-full flex flex-col">
+    <div style={{
+      background: '#fff',
+      border: '1px solid rgba(156,163,175,0.35)',
+      borderRadius: 14,
+      padding: '18px 20px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      height: '100%', display: 'flex', flexDirection: 'column',
+    }}>
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-base font-semibold text-zinc-100">Incident Log</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <h2 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 600, color: '#111827' }}>Incident Log</h2>
           {activeCount > 0 && (
-            <span className="text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-full">
+            <span style={{
+              fontSize: '11px', fontWeight: 700,
+              background: 'rgba(220,38,38,0.08)', color: '#dc2626',
+              border: '1px solid rgba(220,38,38,0.20)',
+              padding: '2px 8px', borderRadius: 20,
+            }}>
               {activeCount} active
             </span>
           )}
         </div>
-
-        {/* Filter toggle */}
         <button
           onClick={() => setShowActive(v => !v)}
-          className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border transition-colors ${
-            showActive
-              ? 'bg-red-950/40 border-red-900/50 text-red-400'
-              : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-600'
-          }`}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontSize: '11px', fontWeight: 500,
+            padding: '4px 10px', borderRadius: 8, cursor: 'pointer',
+            background: showActive ? 'rgba(220,38,38,0.07)' : '#f3f4f6',
+            border: showActive ? '1px solid rgba(220,38,38,0.20)' : '1px solid rgba(156,163,175,0.3)',
+            color: showActive ? '#dc2626' : '#6b7280',
+            transition: 'all 0.15s',
+          }}
         >
-          <Filter size={12} />
+          <Filter size={11} />
           {showActive ? 'Active only' : 'All'}
         </button>
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-2 min-h-0">
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: 2, display: 'flex', flexDirection: 'column', gap: 8, minHeight: 0 }}>
         {displayed.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center py-8">
-            <CheckCircle2 size={32} className="text-zinc-700 mb-2" />
-            <p className="text-sm text-zinc-500">
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '32px 0' }}>
+            <CheckCircle2 size={30} style={{ color: '#d1d5db', marginBottom: 8 }} />
+            <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>
               {showActive ? 'No active incidents.' : 'No incidents recorded yet.'}
             </p>
           </div>
@@ -89,30 +103,49 @@ export default function IncidentLog({ incidents }) {
           displayed.map(inc => (
             <div
               key={inc.id}
-              className={`incident-entry p-3 rounded-xl border text-sm transition-colors ${
-                inc.status === 'active'
-                  ? 'bg-red-950/20 border-red-900/40'
-                  : 'bg-zinc-950/60 border-zinc-800/50'
-              }`}
+              className="incident-entry"
+              style={{
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: inc.status === 'active'
+                  ? '1px solid rgba(220,38,38,0.22)'
+                  : '1px solid rgba(156,163,175,0.25)',
+                background: inc.status === 'active' ? '#fff5f5' : '#f9fafb',
+                fontSize: '13px',
+              }}
             >
-              <div className="flex justify-between items-center mb-1">
-                <span className={`font-semibold capitalize ${SENSOR_COLORS[inc.sensor] ?? 'text-zinc-300'}`}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{
+                  fontWeight: 600,
+                  textTransform: 'capitalize',
+                  color: SENSOR_COLORS[inc.sensor] ?? '#374151',
+                }}>
                   {inc.sensor}
                 </span>
                 {inc.status === 'active' ? (
-                  <span className="flex items-center gap-1 text-xs text-red-400 bg-red-950/50 px-2 py-0.5 rounded-full border border-red-900/50">
-                    <AlertTriangle size={10} /> Active
+                  <span style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontSize: '11px', color: '#dc2626',
+                    background: 'rgba(220,38,38,0.08)',
+                    border: '1px solid rgba(220,38,38,0.20)',
+                    padding: '2px 8px', borderRadius: 20,
+                  }}>
+                    <AlertTriangle size={9} /> Active
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-900/40">
-                    <CheckCircle2 size={10} /> Resolved
+                  <span style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontSize: '11px', color: '#15803d',
+                    background: 'rgba(21,128,61,0.08)',
+                    border: '1px solid rgba(21,128,61,0.18)',
+                    padding: '2px 8px', borderRadius: 20,
+                  }}>
+                    <CheckCircle2 size={9} /> Resolved
                   </span>
                 )}
               </div>
-
-              <p className="text-zinc-300 text-xs leading-relaxed mb-2">{formatMessage(inc)}</p>
-
-              <div className="text-xs text-zinc-600 flex justify-between">
+              <p style={{ margin: '0 0 6px', color: '#4b5563', fontSize: '12px', lineHeight: 1.5 }}>{formatMessage(inc)}</p>
+              <div style={{ fontSize: '11px', color: '#9ca3af', display: 'flex', justifyContent: 'space-between' }}>
                 <span>🔴 {formatDateTime(inc.triggeredAt)}</span>
                 {inc.resolvedAt && <span>✅ {formatDateTime(inc.resolvedAt)}</span>}
               </div>

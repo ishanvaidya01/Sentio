@@ -3,7 +3,14 @@ import { WifiOff, RefreshCw } from 'lucide-react';
 export default function ConnectionBadge({ status }) {
   if (status === 'connected') {
     return (
-      <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-900/50">
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        fontSize: '12px', fontWeight: 600,
+        color: '#15803d',
+        background: 'rgba(21,128,61,0.08)',
+        border: '1px solid rgba(21,128,61,0.18)',
+        padding: '4px 12px', borderRadius: 20,
+      }}>
         <span className="live-dot" aria-hidden="true" />
         Live
       </div>
@@ -11,16 +18,31 @@ export default function ConnectionBadge({ status }) {
   }
   if (status === 'fallback') {
     return (
-      <div className="flex items-center gap-2 text-xs font-semibold text-yellow-400 bg-yellow-950/40 px-3 py-1.5 rounded-full border border-yellow-900/50">
-        <RefreshCw size={12} className="animate-spin" />
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        fontSize: '12px', fontWeight: 600,
+        color: '#b45309',
+        background: 'rgba(180,83,9,0.08)',
+        border: '1px solid rgba(180,83,9,0.18)',
+        padding: '4px 12px', borderRadius: 20,
+      }}>
+        <RefreshCw size={11} style={{ animation: 'spin 1s linear infinite' }} />
         Polling
       </div>
     );
   }
   return (
-    <div className="flex items-center gap-2 text-xs font-semibold text-red-400 bg-red-950/40 px-3 py-1.5 rounded-full border border-red-900/50">
-      <WifiOff size={12} />
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 6,
+      fontSize: '12px', fontWeight: 600,
+      color: '#dc2626',
+      background: 'rgba(220,38,38,0.07)',
+      border: '1px solid rgba(220,38,38,0.18)',
+      padding: '4px 12px', borderRadius: 20,
+    }}>
+      <WifiOff size={11} />
       Offline
     </div>
   );
 }
+
