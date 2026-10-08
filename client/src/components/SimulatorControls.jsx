@@ -1,5 +1,5 @@
-import { Play, Square, Zap, BatteryLow, AlertOctagon } from 'lucide-react';
-import { startSimulator, stopSimulator, injectFault } from '../api';
+import { Play, Square, Zap, BatteryLow, AlertOctagon, RotateCcw } from 'lucide-react';
+import { startSimulator, stopSimulator, injectFault, resetSimulator } from '../api';
 
 const FAULT_BUTTONS = [
   {
@@ -36,6 +36,7 @@ export default function SimulatorControls({ status, onUpdate }) {
 
   const handleStart = async () => { await startSimulator(); onUpdate(); };
   const handleStop  = async () => { await stopSimulator();  onUpdate(); };
+  const handleReset = async () => { await resetSimulator(); onUpdate(); };
   const handleFault = async (type) => { await injectFault(type); onUpdate(); };
 
   return (
@@ -72,7 +73,7 @@ export default function SimulatorControls({ status, onUpdate }) {
         </div>
       </div>
 
-      {/* Start / Stop */}
+      {/* Start / Stop / Reset */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
         <button
           id="sim-start-btn"
@@ -108,6 +109,24 @@ export default function SimulatorControls({ status, onUpdate }) {
           }}
         >
           <Square size={13} /> Stop
+        </button>
+        <button
+          id="sim-reset-btn"
+          onClick={handleReset}
+          style={{
+            flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 7,
+            background: '#f3f4f6',
+            color: '#374151',
+            border: '1px solid rgba(107,114,128,0.25)',
+            borderRadius: 10,
+            padding: '9px 0', fontSize: '13px', fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = '#e5e7eb'}
+          onMouseLeave={e => e.currentTarget.style.background = '#f3f4f6'}
+        >
+          <RotateCcw size={13} /> Reset
         </button>
       </div>
 

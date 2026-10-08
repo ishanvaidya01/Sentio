@@ -29,6 +29,16 @@ export function stopSimulator() {
   interval = null;
 }
 
+export function resetSimulator() {
+  state = {
+    temperature: 30,
+    distance: 50,
+    battery: 100,
+  };
+  activeFault = null;
+  faultCycles = 0;
+}
+
 export function getStatus() {
   return { active, activeFault };
 }

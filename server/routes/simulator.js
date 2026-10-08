@@ -1,5 +1,5 @@
 import express from 'express';
-import { startSimulator, stopSimulator, getStatus, injectFault } from '../services/simulator.js';
+import { startSimulator, stopSimulator, getStatus, injectFault, resetSimulator } from '../services/simulator.js';
 import { emitEvent } from '../services/events.js';
 
 const router = express.Router();
@@ -14,6 +14,12 @@ router.post('/stop', (req, res) => {
   stopSimulator();
   emitEvent('simulator', getStatus());
   res.json({ status: 'stopped' });
+});
+
+router.post('/reset', (req, res) => {
+  resetSimulator();
+  emitEvent('simulator', getStatus());
+  res.json({ status: 'reset' });
 });
 
 router.get('/status', (req, res) => {

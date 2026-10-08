@@ -45,6 +45,10 @@ export async function stopSimulator() {
   await fetch(`${API_URL}/api/simulator/stop`, { method: 'POST' });
 }
 
+export async function resetSimulator() {
+  await fetch(`${API_URL}/api/simulator/reset`, { method: 'POST' });
+}
+
 export async function injectFault(type) {
   await fetch(`${API_URL}/api/simulator/fault`, {
     method: 'POST',
