@@ -7,6 +7,8 @@
   <img src="https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/SSE-Streaming-blue" alt="SSE" />
   <img src="https://img.shields.io/badge/Hardware-Ready-red" alt="Hardware Ready" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
 </p>
 
 <p align="center">
@@ -90,6 +92,14 @@ npm install
 npm run dev # Starts the Vite dev server on port 5173
 ```
 
+### Environment Variables (server/.env)
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `PORT` | No | API and SSE port (default `3000`) |
+| `CLIENT_ORIGIN` | No | Allowed CORS origin for the frontend (default `*` — set this in any shared deployment) |
+| `SIMULATOR_AUTOSTART` | No | Set to `false` to disable the built-in telemetry simulator on boot |
+
 ### 4. Hardware Integration (Arduino/ESP32)
 Point your physical robot to the backend. Use `POST /api/readings` with a flat JSON body:
 ```cpp
@@ -109,6 +119,12 @@ Sentio was designed with a premium, crisp, and professional aesthetic.
 We completely avoided generic dashboard templates, utilizing curated grayscale palettes, vibrant semantic accents (Emerald, Rose, Amber), and subtle shadows. Every interaction and live update is designed to feel responsive, clear, and hardware-accurate.
 
 Built with passion for the future of robotics observability.
+
+## Contributing & License
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and follow the commit conventions documented there.
+
+This project is released under the [MIT License](LICENSE). Security concerns should be reported privately per [SECURITY.md](SECURITY.md).
 
 ---
 
